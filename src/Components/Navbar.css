@@ -1,0 +1,117 @@
+/* Navbar.css */
+
+/* Main container */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #faebd7; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  /* FIX: Remove padding here and use margin/padding on content for 5vw space */
+  padding: 10px 0; 
+  
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+/* Boutique logo text */
+.navbar-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 500;
+  color: #C48E96; 
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  
+  /* FIX: Apply 5vw space to the left of the logo */
+  margin-left: 5vw;
+}
+
+.navbar a {
+    text-decoration: none; /* Removes the underline from all links (logo, Shop All, cart icon) */
+    color: inherit;      /* Ensures the text color is inherited from the parent */
+}
+
+.navbar a:hover {
+    color: var(--deep-rose); /* Optional: subtle hover effect */
+}
+
+
+.navbar-logo:hover {
+  color: #B76E79;
+}
+
+/* Right-side navigation elements (Shop All and Icons) */
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 30px; 
+  
+  /* FIX: Apply 5vw space to the right of the entire icon group */
+  margin-right: 5vw;
+}
+
+/* Container for just the icons to better control their spacing */
+.navbar-icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Icon buttons */
+.navbar-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  /* Ensure icon visibility */
+  color: #3A2B2B; 
+  transition: opacity 0.3s ease, transform 0.2s ease;
+}
+
+.navbar-button:hover {
+  opacity: 0.7;
+  transform: scale(1.1);
+  color: #B76E79; 
+}
+
+/* Optional “Shop All” text button */
+.shop-all {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  color: #3A2B2B;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  /* border: 1px solid #B76E79;
+  border-radius: 8px;
+  height: 3vh;
+  width: 5vw;
+  background-color: rgb(193, 148, 93); */
+}
+
+.shop-all:hover {
+  color: #B76E79;
+}
+
+/* Responsive layout */
+@media (max-width: 640px) {
+  .navbar-logo {
+    font-size: 1.5rem;
+    /* Reduce margin on mobile */
+    margin-left: 15px; 
+  }
+  
+  .navbar-nav {
+      /* Reduce margin on mobile */
+      margin-right: 15px;
+      gap: 15px;
+  }
+  .navbar-icons {
+      gap: 10px;
+  }
+}

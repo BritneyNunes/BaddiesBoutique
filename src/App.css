@@ -1,0 +1,14 @@
+/* Global styles for the main application container */
+
+/* Define the primary background color */
+:root {
+    --almond-bg: #faebd7;
+    --charcoal-text: #3A2B2B;
+}
+
+.app-container {
+    
+    /* Ensures the background covers the entire page height */
+    min-height: 100vh;
+    background-color: var(--almond-bg); 
+}

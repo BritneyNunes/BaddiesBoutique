@@ -1,0 +1,254 @@
+/*
+ * Baddies Boutique Checkout Page Styles - FINAL VERSION
+ * Incorporates specific layout, font treatments, color palette, soft border radius, 
+ * and fix for the side-by-side inputs.
+ */
+
+/* --- 0. CSS Variables & Typography Defaults --- */
+
+:root {
+    --color-almond-bg: #faebd7;     /* Main page background (light tan/peach) */
+    --color-charcoal-text: #3A2B2B; /* Dark text */
+    --color-dusty-rose-accent: #C48E96; /* Icon/Accent color */
+    --color-taupe-border: #D9C4C0;  /* Light borders */
+    --color-light-bg-card: #fcfcfc; /* Card backgrounds (Summary/Forms) */
+    --color-subtle-text: #999;      /* Smaller, less prominent text */
+    --radius-soft: 8px;             /* Prominent radius for containers */
+    --radius-input: 6px;            /* Radius for input fields and button */
+}
+
+/* Base font for prose text (Summary lines, labels) */
+.checkout-page-container {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    color: var(--color-charcoal-text);
+    background-color: var(--color-almond-bg); 
+    min-height: 100vh;
+    padding-top: 0; 
+    padding-bottom: 4rem;
+}
+
+/* --- 1. Header & Navigation (Matches Navbar Area) --- */
+
+.checkout-header {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-taupe-border); 
+    background-color: var(--color-almond-bg); 
+    box-sizing: border-box; 
+}
+
+.boutique-title {
+    /* Placeholder for the custom script/decorative font */
+    font-family: 'Times New Roman', serif; 
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-dusty-rose-accent);
+}
+
+/* --- 2. Main Title ("Finalizing Your Order") --- */
+
+.section-title-checkout {
+    /* Placeholder for the elegant serif font */
+    font-family: 'Georgia', serif; 
+    font-size: 2.8rem;
+    font-weight: 400; /* Lighter weight for elegance */
+    text-align: center;
+    margin-top: 3rem; 
+    margin-bottom: 3.5rem;
+    color: var(--color-charcoal-text);
+}
+
+
+/* --- 3. Main Content Layout --- */
+
+.checkout-content-wrapper {
+    max-width: 1200px; 
+    margin: 0 auto;
+    padding: 0 1.5rem; 
+    display: flex;
+    gap: 3.5rem; 
+    align-items: flex-start;
+}
+
+.form-sections-wrapper {
+    flex: 2.5; /* Approx 70% width for forms */
+    display: flex;
+    flex-direction: column;
+    gap: 2rem; 
+}
+
+/* --- 4. Form Card Styles (Main Containers) --- */
+
+.form-card {
+    background-color: var(--color-light-bg-card);
+    padding: 2.5rem;
+    /* Soft Border Radius */
+    border-radius: 25px; 
+    box-shadow: none; 
+    border: 1px solid var(--color-taupe-border);
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem; 
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--color-dusty-rose-accent);
+    font-family: 'Georgia', serif;
+}
+
+.section-heading svg {
+    margin-right: 0.75rem;
+    width: 18px; 
+    height: 18px;
+    color: var(--color-dusty-rose-accent);
+}
+
+/* --- 5. Input Field Styles --- */
+
+.input-label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--color-charcoal-text);
+    margin-bottom: 0.4rem;
+}
+
+.input-field {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    border: 1px solid var(--color-taupe-border);
+    /* Soft Border Radius */
+    border-radius: var(--radius-input); 
+    background-color: var(--color-almond-bg);
+    transition: border-color 0.2s;
+    /* Autofill fix */
+    -webkit-box-shadow: 0 0 0px 1000px var(--color-almond-bg) inset !important;
+    box-shadow: 0 0 0px 1000px var(--color-almond-bg) inset !important;
+    -webkit-text-fill-color: var(--color-charcoal-text) !important;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: var(--color-dusty-rose-accent);
+    box-shadow: 0 0 0 1px var(--color-dusty-rose-accent);
+}
+
+.grid-cols-2 {
+    display: grid;
+    /* grid-template-columns: 1fr 1fr; */
+    gap: 1.5rem; 
+    width: 20vw;
+}
+
+.form-field-group {
+    margin-bottom: 1.25rem;
+}
+
+/* --- 6. Order Summary Styles --- */
+
+.order-summary-card-checkout {
+    flex: 1; 
+    background-color: var(--color-light-bg-card);
+    padding: 2.5rem;
+    /* Soft Border Radius */
+    border-radius: 25px; 
+    height: fit-content; 
+    border: 1px solid var(--color-taupe-border);
+}
+
+.summary-heading-checkout {
+    font-family: 'Georgia', serif;
+    font-weight: 700;
+    font-size: 1.5rem; 
+    color: var(--color-charcoal-text);
+    padding-bottom: 1.2rem;
+    margin-bottom: 1.2rem;
+}
+
+.summary-line-checkout {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+}
+
+.summary-line-checkout span:first-child {
+    color: var(--color-charcoal-text); 
+    font-weight: 400;
+}
+
+.summary-totals-section {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-taupe-border);
+    margin-bottom: 1.5rem;
+}
+
+.total-line-checkout {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.8rem; 
+    font-weight: 700;
+    color: var(--color-charcoal-text);
+    padding-top: 0; 
+}
+.order-total-label {
+    font-size: 1.5rem; 
+    margin-right: 1rem;
+}
+
+/* --- 7. Action Button --- */
+
+.place-order-button {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 0.9rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    
+    background-color: var(--color-dusty-rose-accent);
+    color: white; 
+    border: none;
+    /* Soft Border Radius */
+    border-radius: var(--radius-input); 
+    box-shadow: 0 2px 5px rgba(196, 142, 150, 0.2); 
+    transition: background-color 0.2s;
+}
+
+.place-order-button:hover:not(:disabled) {
+    background-color: #b37e85; 
+}
+
+.secure-text-checkout {
+    color: var(--color-subtle-text); 
+    font-size: 0.8rem; 
+    text-align: center;
+    font-style: italic;
+    margin-top: 0.6rem; 
+    line-height: 1.4;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 1024px) {
+    .checkout-content-wrapper {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    .form-sections-wrapper,
+    .order-summary-card-checkout {
+        flex: none; 
+        width: 100%;
+    }
+}
+

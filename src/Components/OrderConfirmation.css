@@ -1,0 +1,179 @@
+/*
+ * Order Confirmation Page Styles (OrderConfirmation.css)
+ * Contains all styling for the Order Placed screen.
+ */
+
+/* --- 0. CSS Variables & Typography Defaults --- */
+
+:root {
+    --color-almond-bg: #faebd7;     /* Main page background (light tan/peach) */
+    --color-charcoal-text: #3A2B2B; /* Dark text */
+    --color-dusty-rose-accent: #C48E96; /* Icon/Accent color */
+    --color-taupe-border: #D9C4C0;  /* Light borders */
+    --color-light-bg-card: #fcfcfc; /* Card backgrounds */
+    --color-subtle-text: #999;
+    --radius-soft: 8px;             /* Prominent radius for containers */
+    --radius-input: 6px;            /* Radius for buttons */
+}
+
+/* Page background and base font */
+.confirmation-page-container {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    color: var(--color-charcoal-text);
+    background-color: var(--color-almond-bg); 
+    min-height: 100vh;
+    padding-top: 0; 
+}
+
+/* --- 1. Header/Navbar Styles (Used by OrderConfirmation and Checkout) --- */
+
+.checkout-header {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-taupe-border); 
+    background-color: var(--color-almond-bg); 
+    box-sizing: border-box; 
+}
+
+.boutique-title {
+    font-family: 'Times New Roman', serif; 
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-dusty-rose-accent);
+}
+
+/* Custom icon styling for the mail/heart */
+.header-icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    color: var(--color-charcoal-text);
+}
+.cart-badge {
+    position: absolute; 
+    top: -5px; 
+    right: -5px; 
+    height: 8px; 
+    width: 8px; 
+    border-radius: 50%; 
+    background-color: var(--color-dusty-rose-accent); 
+    border: 2px solid var(--color-almond-bg); 
+}
+
+
+/* --- 2. Main Centering Content Area --- */
+
+.confirmation-content-wrapper {
+    display: flex; 
+    justify-content: center; 
+    align-items: flex-start; 
+    min-height: calc(100vh - 100px); 
+    padding-top: 6rem; /* Space below the header */
+    padding-bottom: 3rem;
+}
+
+
+/* --- 3. Confirmation Card Styles --- */
+
+.confirmation-card {
+    background-color: var(--color-light-bg-card);
+    border: 1px solid var(--color-taupe-border);
+    border-radius: var(--radius-soft); 
+    max-width: 450px; 
+    width: 100%;
+    padding: 3rem;
+    padding-top: 4.5rem; /* Increased top padding to account for the icon's position */
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    position: relative; 
+    z-index: 10;
+}
+
+/* Checkmark Icon and Wrapper */
+.confirmation-icon-wrapper {
+    margin: 0 auto;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--color-dusty-rose-accent);
+    position: absolute;
+    top: -30px; /* Moves it halfway above the card's top border */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white; /* Ensures background is white against the tan page */
+    z-index: 20;
+}
+.confirmation-icon-wrapper svg {
+    color: var(--color-dusty-rose-accent);
+    fill: none; /* Lucide icons use fill="none" by default, but explicit for safety */
+}
+
+.order-placed-title {
+    font-family: 'Georgia', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-charcoal-text);
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+    
+.order-placed-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-charcoal-text);
+    margin-bottom: 2.5rem;
+}
+
+/* --- 4. Button Styles --- */
+
+.button-group {
+    /* Simple vertical stacking */
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* Equivalent to Tailwind space-y-3 */
+}
+
+/* Primary Button (Continue Shopping) */
+.continue-shopping-button {
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    
+    background-color: var(--color-dusty-rose-accent);
+    color: white; 
+    border: none;
+    border-radius: var(--radius-input); 
+    box-shadow: 0 2px 5px rgba(196, 142, 150, 0.2); 
+    transition: background-color 0.2s;
+}
+.continue-shopping-button:hover {
+    background-color: #b37e85; 
+}
+
+/* Secondary Button (View History) */
+.view-history-button {
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+
+    background-color: white; 
+    color: var(--color-charcoal-text); 
+    border: 1px solid var(--color-taupe-border);
+    border-radius: var(--radius-input);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: background-color 0.2s;
+}
+.view-history-button:hover {
+    background-color: #f0f0f0;
+}
