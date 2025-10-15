@@ -34,7 +34,7 @@
 
 .navbar a {
     text-decoration: none; /* Removes the underline from all links (logo, Shop All, cart icon) */
-    color: inherit;      /* Ensures the text color is inherited from the parent */
+    color: inherit;       /* Ensures the text color is inherited from the parent */
 }
 
 .navbar a:hover {
@@ -87,16 +87,73 @@
   color: #3A2B2B;
   cursor: pointer;
   transition: color 0.3s ease;
-  /* border: 1px solid #B76E79;
-  border-radius: 8px;
-  height: 3vh;
-  width: 5vw;
-  background-color: rgb(193, 148, 93); */
 }
 
 .shop-all:hover {
   color: #B76E79;
 }
+
+/* --- NEW PROFILE DROPDOWN STYLES --- */
+
+/* Container for positioning the dropdown */
+.navbar-profile-container {
+    position: relative;
+    /* This ensures the dropdown is positioned relative to the profile icon */
+}
+
+/* Base style for the dropdown menu */
+.profile-dropdown {
+    position: absolute;
+    top: 100%; /* Position right below the icon/button */
+    right: 0;
+    min-width: 150px;
+    background-color: #ffffff; /* White background for contrast */
+    border: 1px solid #C48E96;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1010; /* Higher than the navbar itself */
+    display: flex;
+    flex-direction: column;
+    padding: 5px 0;
+    margin-top: 10px; /* Space between icon and dropdown */
+    font-family: 'Inter', sans-serif;
+    color: #3A2B2B;
+}
+
+/* Username/Greeting style */
+.profile-username {
+    padding: 8px 15px;
+    font-weight: 600;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    color: #C48E96;
+}
+
+/* Individual links/buttons inside the dropdown */
+.dropdown-item {
+    display: block; /* Make links/buttons take full width */
+    width: 100%;
+    padding: 10px 15px;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: #3A2B2B; /* Dark text */
+    text-decoration: none; /* Ensure links look like buttons */
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #faebd7; /* Light background on hover */
+    color: #B76E79; /* Subtle rose color on hover */
+}
+
+.logout-button {
+    font-weight: 500;
+}
+
 
 /* Responsive layout */
 @media (max-width: 640px) {
@@ -114,4 +171,8 @@
   .navbar-icons {
       gap: 10px;
   }
+    .profile-dropdown {
+        /* Adjust placement slightly for smaller screens */
+        right: -10px; 
+    }
 }

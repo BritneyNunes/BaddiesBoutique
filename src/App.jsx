@@ -1,32 +1,46 @@
-import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from './Components/Navbar';
 import Home from './Components/Home';
 import Cart from './Components/Cart'; 
 import Checkout from './Components/Checkout';
 import OrderConfirmation from './Components/OrderConfirmation';
-import './App.css'; // <--- NEW: Import App CSS file
+// Import the AuthProvider for global state management
+import { AuthProvider } from './Components/AuthContext'; 
+// Import the new pages
+import SignUp from './Components/SignUp'; 
+import Login from './Components/Login'; 
+
+import './App.css'; 
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  const handleLoginSuccess = () => setIsLoggedIn(true);
-  const handleLogout = () => setIsLoggedIn(false);
+  // NOTE: Removed local state (isLoggedIn, handleLoginSuccess, handleLogout) 
+  // Authentication is now managed entirely by AuthProvider and useAuth() hook.
 
   return (
+    // Wrap the entire app in Router and AuthProvider
     <Router>
-      {/* Used className="app-container" instead of inline style */}
-      <div className="app-container">
-        <Navbar /> {/* Always visible */}
+      <AuthProvider>
+        <div className="app-container">
+          <Navbar /> {/* Always visible */}
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/confirmation" element={<OrderConfirmation />} />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/confirmation" element={<OrderConfirmation />} />
 
-        </Routes>
-      </div>
+            {/* NEW AUTHENTICATION ROUTES */}
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/login" element={<Login />} />
+            {/* The Navbar icon links to '/auth' if logged out. Let's redirect that to login. */}
+            <Route path="/auth" element={<Login />} /> 
+            
+            {/* TODO: Add a protected route for the user profile linked from the navbar */}
+            {/* <Route path="/profile" element={<Profile />} /> */}
+
+          </Routes>
+        </div>
+      </AuthProvider>
     </Router>
   );
 }

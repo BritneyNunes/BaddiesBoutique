@@ -1,0 +1,142 @@
+/* --- Styling matching Baddies Boutique Theme --- */
+
+/* Variables based on Navbar theme */
+:root {
+  --cream: #faebd7;
+  --rose: #C48E96;
+  --deep-rose: #B76E79;
+  --dark-text: #3A2B2B;
+}
+
+/* FIX: Apply border-box globally for predictable layout */
+* {
+  box-sizing: border-box; 
+}
+
+.login-page {
+  min-height: 100vh;
+  background-color: var(--cream);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Ensure padding leaves space for the fixed navbar */
+  padding: 80px 20px 20px; 
+}
+
+.login-container {
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  transition: transform 0.3s ease;
+}
+
+.login-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  font-weight: 500;
+  color: var(--deep-rose);
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--rose);
+  pointer-events: none;
+}
+
+.login-input {
+  /* This width is now correctly calculated thanks to box-sizing: border-box */
+  width: 100%; 
+  padding: 12px 12px 12px 45px; /* Added left padding for icon */
+  border: 1px solid #e0d9d0;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--dark-text);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: #fcfcfc;
+}
+
+.login-input:focus {
+  border-color: var(--rose);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(196, 142, 150, 0.2);
+}
+
+.login-button {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--rose);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.login-button:hover:not(:disabled) {
+  background-color: var(--deep-rose);
+  transform: translateY(-1px);
+}
+
+.login-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #d9534f;
+  background-color: #f2dede;
+  border: 1px solid #ebccd1;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.signup-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.95rem;
+  color: var(--dark-text);
+}
+
+.signup-link a {
+  color: var(--rose);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.signup-link a:hover {
+  text-decoration: underline;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .login-container {
+    padding: 30px 20px;
+    margin: 0 10px;
+  }
+  .login-title {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+}
