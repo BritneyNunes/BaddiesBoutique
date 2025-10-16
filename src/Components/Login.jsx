@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock } from 'lucide-react'; 
-import './LogIn.css'; 
+import './Login.css'; 
 import { useAuth } from './AuthContext'; 
 
 // NOTE: API_BASE_URL and LOGIN_ENDPOINT are now only used internally by AuthContext's login function.
