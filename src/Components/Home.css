@@ -1,135 +1,270 @@
+/* General Styling */
+/* body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f8f8; 
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+} */
+
+/* Home Container */
 .home {
-  background-color: #faebd7;
-  font-family: "Inter", sans-serif;
-  min-height: 100vh;
-  padding: 120px 80px 40px; 
+    padding: 20px;
+    /* REMOVED max-width: 1200px to allow content to span full width */
+    width: 100%;
+    box-sizing: border-box;
 }
 
-/* Header */
-.home-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 40px;
-}
-
-.brand {
-  font-size: 28px;
-  color: #c09f9a; /* Soft dusty rose */
-  font-weight: 500;
-  letter-spacing: 1px;
-}
-
-.shop-all-btn {
-  background-color: transparent;
-  border: 1px solid #d6b5af;
-  color: #5a4c4c;
-  padding: 8px 16px;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.shop-all-btn:hover {
-  background-color: #d6b5af;
-  color: white;
-}
-
-/* --- Section Title Styling --- */
-.section-title {
+.home-title {
     text-align: center;
-    font-family: 'Playfair Display', serif; /* Elegant serif font */
-    font-size: 43px;
-    font-weight: 500; /* Bold weight */
-    color: var(--charcoal-text);
-    letter-spacing: 1px;
+    margin-bottom: 40px;
+    color: #333;
+    font-size: 2.2em;
+    font-weight: 600;
 }
 
-/* Product Grid */
-.product-grid {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 40px;
+/* Dress Grid */
+.dress-grid {
+    display: grid;
+    /* Set a default 2-column layout for small/medium screens */
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 25px;
+    justify-content: center;
 }
 
-/* Product Card */
-.product-card {
-  width: 336px;
-  height: 80vh;
-  border-radius: 15px;
-  overflow: hidden;
-  background-color: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+/* Dress Card */
+.dress-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+    min-width: 250px; 
+    position: relative;
 }
 
-.product-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+.dress-card:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Image Section */
+/* Image Container */
+.image-container {
+    width: 100%;
+    /* Set height for tall 'full portrait' look */
+    height: 480px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    background-color: #f0f0f0; 
+}
+
 .product-image {
-  position: relative;
-  height: 350px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff7f3;
-  font-size: 24px;
-  font-weight: 600;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    display: block;
 }
 
-.rating {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background-color: rgba(255, 235, 230, 0.8);
-  color: #5a3a3a;
-  padding: 2px 8px;
-  border-radius: 8px;
-  font-size: 14px;
+.image-missing-text {
+    position: absolute;
+    color: #888;
+    font-size: 1.1em;
+    text-align: center;
+    padding: 10px;
+    display: none;
 }
 
-/* Product Info */
-.product-info {
-  padding: 15px 20px;
-  text-align: left;
+/* Card Color Variations */
+.card-color-1 { background-color: #f7e6f0; } 
+.card-color-2 { background-color: #e6f7f0; } 
+.card-color-3 { background-color: #f0e6f7; } 
+
+/* Overlay for Rating & Heart */
+.overlay-top {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 2; 
 }
 
-.desc {
-  color: #3a2e2e;
-  font-weight: 500;
-  margin-bottom: 5px;
+.rating-badge {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    display: flex;
+    align-items: center;
+    gap: 3px;
 }
 
-.category {
-  color: #8b7d7d;
-  font-size: 14px;
-  margin-bottom: 10px;
+.heart-icon {
+    cursor: pointer;
+    padding: 5px; 
 }
 
-.price {
-  color: #b45f5f;
-  font-weight: bold;
-  font-size: 16px;
-  margin-bottom: 12px;
+/* Info Container */
+.info-container {
+    padding: 15px;
+    display: flex;
+    flex-direction: column; 
+    flex-grow: 1; 
+    justify-content: space-between; 
+    min-height: 120px; 
+    overflow: visible; 
 }
 
-/* Add Button */
-.add-btn {
-  background-color: #c9a2a2;
-  color: white;
-  border: none;
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 15px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.product-name-bottom {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 5px;
 }
 
-.add-btn:hover {
-  background-color: #a98181;
+.product-category {
+    font-size: 0.85em;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+/* Price styling - PINK */
+.product-price { 
+    color: #FF69B4; 
+    font-weight: 600; 
+    font-size: 1.1em; 
+    margin: 0; 
+}
+
+/* Container for Price and Size chips */
+.price-and-sizes-row {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    width: 100%; 
+    margin-bottom: 10px;
+    min-height: 28px; 
+}
+
+/* Size Chip styling (Unselected) */
+.size-selector-chips {
+    display: flex; 
+    gap: 5px;
+    align-items: center; 
+}
+
+.size-chip {
+    padding: 3px 8px; 
+    border-radius: 4px; 
+    border: 1px solid #ccc;
+    background-color: #fff; 
+    color: #333;
+    font-weight: 500;
+    font-size: 0.8em;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 25px; 
+    height: 20px;
+    line-height: 20px;
+    box-sizing: border-box;
+}
+
+.size-chip:hover:not(.selected) {
+    border-color: #FF69B4; 
+    color: #FF69B4;
+}
+
+
+/* Selected Size Chip styling - PINK */
+.size-chip.selected {
+    background-color: #FF69B4; 
+    border-color: #FF69B4;
+    color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2); 
+}
+
+
+/* Add to Cart Button */
+.add-to-bag-button {
+    background-color: #f0f0f0; 
+    color: #333; 
+    border: none;
+    border-radius: 8px;
+    padding: 12px 15px; 
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+    margin-top: auto; 
+}
+
+.add-to-bag-button:hover:not(:disabled) {
+    background-color: #e0e0e0; 
+    transform: translateY(-2px);
+}
+
+.add-to-bag-button:disabled {
+    background-color: #ddd;
+    color: #999;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Loading Indicator Styles (unchanged) */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    z-index: 9999;
+}
+.loading-text { color: #FF69B4; font-size: 1.5em; margin-bottom: 20px; }
+.spinner-dots { display: flex; justify-content: center; align-items: center; height: 20px; }
+.dot {
+    width: 10px; height: 10px; background-color: #ccc; border-radius: 50%;
+    margin: 0 5px; animation: bounce 1.4s infinite ease-in-out both;
+}
+.dot-2 { animation-delay: -0.32s; }
+.dot-3 { animation-delay: -0.16s; }
+
+@keyframes bounce {
+    0%, 80%, 100% { transform: scale(0); background-color: #ccc; }
+    40% { transform: scale(1); background-color: #FF69B4; }
+}
+
+
+/* --- Responsive Adjustments (FIXED BREAKPOINTS) --- */
+/* Enforce 4-column layout on wide screens, matching the original screenshot */
+@media (min-width: 900px) {
+    .dress-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
 }

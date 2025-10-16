@@ -74,10 +74,10 @@ function Navbar() {
                 {/* Use the actual user name if available, otherwise a generic greeting */}
                 <span className="profile-username">Hi, {user?.name || 'Baddie'}!</span>
                 
-                {/* Link to the user's main profile page */}
+                {/* Link to the user's main profile page
                 <Link to="/profile" className="dropdown-item" onClick={() => setShowProfileMenu(false)}>
                   View Profile
-                </Link>
+                </Link> */}
 
                 {/* Log Out button */}
                 <button className="dropdown-item logout-button" onClick={handleLogout}>

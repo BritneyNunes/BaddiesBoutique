@@ -1,134 +1,133 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from './AuthContext';
 import { Mail, Lock } from 'lucide-react'; 
-import './Login.css'; // Import the CSS file
+import './LogIn.css'; 
+import { useAuth } from './AuthContext'; 
 
-// NOTE: Replace this with your actual backend API URL
-const API_BASE_URL = 'http://localhost:3000/auth'; 
+// NOTE: API_BASE_URL and LOGIN_ENDPOINT are now only used internally by AuthContext's login function.
+// We keep the imports clean here.
 
-function Login() {
-  const [form, setForm] = useState({
-    email: '',
-    password: ''
-  });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const { login } = useAuth();
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
+function LogIn() {
+    const [form, setForm] = useState({
+        email: '',
+        password: ''
     });
-    // Clear error message when user starts typing again
-    if (error) setError('');
-  };
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+    // Get the centralized login function from your AuthProvider
+    const { login } = useAuth();
+    const navigate = useNavigate();
 
-    if (!form.email || !form.password) {
-      setError('Email and password are required.');
-      return;
-    }
+    const handleChange = (e) => {
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value
+        });
+        if (error) setError('');
+    };
 
-    setLoading(true);
-    setError('');
+    const handleLogin = async (e) => {
+        e.preventDefault();
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/login`, { // Use /login endpoint
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: form.email,
-          password: form.password
-        }),
-      });
+        if (!form.email || !form.password) {
+            setError('Email and password are required.');
+            return;
+        }
 
-      const data = await response.json();
+        setLoading(true);
+        setError('');
 
-      if (!response.ok) {
-        // Handle failed login attempts (e.g., incorrect credentials)
-        throw new Error(data.message || 'Login failed. Check your email and password.');
-      }
+        try {
+            // ⭐ CORE CHANGE: Call the AuthProvider's login function with raw credentials
+            // The AuthProvider handles the Base64 encoding, API call to /checkpassword,
+            // and saving the resulting token to localStorage.
+            const result = await login(form.email, form.password);
 
-      // Successful login response should include user data and a token
-      const { user, token } = data; 
-      
-      // 1. Log the user in globally via Auth Context
-      login(user, token); 
+            if (result.success) {
+                // Login successful, navigate home
+                navigate('/'); 
+            } else {
+                // Display the error message provided by the AuthProvider
+                throw new Error(result.message || 'Login failed.');
+            }
 
-      // 2. Navigate to the home page or previous page
-      navigate('/'); 
+        } catch (err) {
+            console.error('Login Error:', err);
+            // The AuthProvider now returns user-friendly messages, so we display them directly
+            const displayError = err.message.includes("Network error") 
+                ? "Could not connect to the backend. Is your server running?" 
+                : err.message;
+            setError(displayError);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    } catch (err) {
-      console.error('Login Error:', err);
-      // Display the error message from the thrown error
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    return (
+        <div className="login-page">
+            <div className="login-container">
+                <h2 className="login-title">
+                    Welcome Back, Baddie
+                </h2>
+                
+                {/* Error Message Display */}
+                {error && (
+                    <div className="login-error">
+                        {error}
+                    </div>
+                )}
 
-  return (
-    <div className="login-page">
-      <div className="login-container">
-        <h2 className="login-title">Welcome Back, Baddie</h2>
-        
-        {error && <div className="error-message">{error}</div>}
+                <form onSubmit={handleLogin} className="login-form">
+                    
+                    {/* Email Field */}
+                    <div className="input-group">
+                        <Mail size={20} className="input-icon" />
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Email Address"
+                            value={form.email}
+                            onChange={handleChange}
+                            className="login-input"
+                            disabled={loading}
+                            required
+                        />
+                    </div>
 
-        <form onSubmit={handleLogin}>
-          
-          {/* Email Field */}
-          <div className="form-group">
-            <Mail size={20} className="input-icon" />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email Address"
-              value={form.email}
-              onChange={handleChange}
-              className="login-input"
-              disabled={loading}
-              required
-            />
-          </div>
+                    {/* Password Field */}
+                    <div className="input-group">
+                        <Lock size={20} className="input-icon" />
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            value={form.password}
+                            onChange={handleChange}
+                            className="login-input"
+                            disabled={loading}
+                            required
+                        />
+                    </div>
 
-          {/* Password Field */}
-          <div className="form-group">
-            <Lock size={20} className="input-icon" />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={form.password}
-              onChange={handleChange}
-              className="login-input"
-              disabled={loading}
-              required
-            />
-          </div>
+                    <button 
+                        type="submit" 
+                        className="login-button" 
+                        disabled={loading}
+                    >
+                        {loading ? 'Logging In...' : 'Log In'}
+                    </button>
+                </form>
 
-          <button 
-            type="submit" 
-            className="login-button" 
-            disabled={loading}
-          >
-            {loading ? 'Logging In...' : 'Log In'}
-          </button>
-        </form>
-
-        <p className="signup-link">
-          Don't have an account? <Link to="/signup">Sign Up</Link>
-        </p>
-      </div>
-    </div>
-  );
+                <p className="signup-prompt">
+                    Don't have an account? 
+                    <Link to="/signup" className="signup-link">
+                        Sign Up
+                    </Link>
+                </p>
+            </div>
+        </div>
+    );
 }
 
-export default Login;
+export default LogIn;

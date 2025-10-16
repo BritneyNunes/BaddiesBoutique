@@ -74,6 +74,7 @@
     min-height: calc(100vh - 100px); 
     padding-top: 6rem; /* Space below the header */
     padding-bottom: 3rem;
+    border-radius: 90px;
 }
 
 

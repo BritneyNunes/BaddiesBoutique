@@ -42,14 +42,16 @@
   margin-bottom: 30px;
 }
 
-.form-group {
-  margin-bottom: 20px;
+/* UPDATED: Add position: relative to establish a positioning context for the icon */
+.input-group {
   position: relative;
+  margin-bottom: 20px;
 }
 
 .input-icon {
   position: absolute;
   left: 15px;
+  /* UPDATED: Adjusted top to center the icon vertically */
   top: 50%;
   transform: translateY(-50%);
   color: var(--rose);
@@ -102,7 +104,7 @@
   cursor: not-allowed;
 }
 
-.error-message {
+.login-error { /* Renamed from .error-message as used in component */
   color: #d9534f;
   background-color: #f2dede;
   border: 1px solid #ebccd1;
@@ -112,20 +114,21 @@
   text-align: center;
 }
 
-.signup-link {
+.signup-prompt {
   text-align: center;
   margin-top: 20px;
   font-size: 0.95rem;
   color: var(--dark-text);
 }
 
-.signup-link a {
-  color: var(--rose);
+/* UPDATED: Target the Link class directly and apply the deep-rose color */
+.signup-link {
+  color: var(--deep-rose);
   font-weight: 600;
   text-decoration: none;
 }
 
-.signup-link a:hover {
+.signup-link:hover {
   text-decoration: underline;
 }
 

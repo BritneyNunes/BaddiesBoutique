@@ -1,139 +1,185 @@
-import React, { useState, useEffect } from 'react';
-import { Heart, ShoppingBag, Loader, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext'; // ⭐ IMPORTED useAuth
+import { Heart, ShoppingCart } from 'lucide-react';
 
-// --- Configuration ---
-// UPDATED to HTTPS as requested
-const API_BASE_URL = 'https://localhost:3000'; 
+// NOTE: Ensure your API URL is correct here or imported from a config file
+const ADD_TO_CART_ENDPOINT = "http://localhost/3000";
+const PRODUCTS_API_ENDPOINT = "http://localhost/3000";
 
-// --- 1. DressCard Component (Sub-component for displaying a single product) ---
-const DressCard = ({ dress }) => {
-  // Use a fallback for the image URL in case the server response is missing it
-  const imageUrl = dress.imageUrl || `https://placehold.co/400x550/000000/FFFFFF?text=${dress.title.replace(/\s/g, '+')}`;
-  const formattedPrice = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(dress.price);
+function Home() {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+    
+    // ⭐ Get the necessary functions/state from AuthContext
+    const { getToken, isLoggedIn } = useAuth(); 
 
-  return (
-    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden group">
-      <div className="relative">
-        <img
-          src={imageUrl}
-          alt={dress.title}
-          className="w-full h-96 object-cover object-center transition-opacity duration-500 group-hover:opacity-90"
-          onError={(e) => {
-            e.target.onerror = null; 
-            e.target.src = `https://placehold.co/400x550/6B7280/FFFFFF?text=Image+Not+Found`;
-          }}
-        />
-        <div className="absolute top-3 right-3 p-2 bg-white/70 backdrop-blur-sm rounded-full text-red-600 cursor-pointer hover:bg-white transition">
-          <Heart size={20} fill="currentColor" />
-        </div>
-        
-        {/* Quick Actions Overlay (Appears on hover) */}
-        <div className="absolute inset-x-0 bottom-0 p-3 flex justify-center transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-white/90">
-            <button className="flex items-center justify-center space-x-2 w-full px-4 py-2 text-sm font-semibold text-white bg-gray-900 rounded-lg shadow-md hover:bg-gray-700 transition">
-                <ShoppingBag size={18} />
-                <span>Add to Bag</span>
-            </button>
-        </div>
-      </div>
-      
-      <div className="p-4 text-center">
-        <h3 className="text-lg font-bold text-gray-900 truncate">{dress.title}</h3>
-        <p className="text-sm text-gray-500 mt-1">{dress.category}</p>
-        <p className="text-xl font-extrabold text-gray-800 mt-2">{formattedPrice}</p>
-      </div>
-    </div>
-  );
-};
-
-// --- 2. Home Component (Main Component for the Page) ---
-export default function App() {
-  const [dresses, setDresses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
     /**
-     * Fetches the product catalog from the Node.js API endpoint.
-     * This endpoint is public and does not require authentication.
+     * UPDATED: Function to fetch products. It now conditionally sends the Basic Auth token.
      */
-    const fetchDresses = async () => {
-      try {
-        // Fetching from the new HTTPS endpoint
-        const response = await fetch(`${API_BASE_URL}/dresses`);
-
-        if (!response.ok) {
-          // If the status is 4xx or 5xx, throw an error with the status
-          throw new Error(`HTTP error! Status: ${response.status}`);
+    const fetchProducts = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        
+        const authToken = getToken(); 
+        
+        // Prepare headers object
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+        
+        // CRITICAL FIX: Only add the Authorization header if a token exists.
+        if (authToken) {
+            headers['Authorization'] = `Basic ${authToken}`;
         }
 
-        const data = await response.json();
-        setDresses(data);
-      } catch (err) {
-        console.error("Failed to fetch dresses:", err);
-        setError(err.message || "Could not connect to the API. Check your server status.");
-      } finally {
-        setLoading(false);
-      }
+        try {
+            const response = await fetch(`${PRODUCTS_API_ENDPOINT}/dresses`, {
+                method: 'GET',
+                headers: headers, 
+            });
+
+            if (!response.ok) {
+                // We'll treat any failure as an error but stop if it's a hard error.
+                throw new Error(`Failed to fetch products: ${response.statusText}. Status: ${response.status}.`);
+            }
+            
+            const data = await response.json();
+            setProducts(data);
+        } catch (err) {
+            console.error("Product Fetch Error:", err);
+            // Set error state for display, and clear products array
+            setError("Could not load products. Please ensure your backend is running.");
+            setProducts([]);
+        } finally {
+            setLoading(false);
+        }
+    }, [getToken]);
+
+    useEffect(() => {
+        fetchProducts();
+    }, [fetchProducts]);
+
+    /**
+     * UPDATED: Handles adding a product to the cart with Basic Auth.
+     * @param {string} productId - The ID of the product to add.
+     */
+    const handleAddToCart = async (productId) => {
+        
+        // 1. Get the Auth Token using the centralized function
+        const authToken = getToken(); 
+
+        if (!authToken) {
+            // Handle the missing token error gracefully
+            console.error("ADD TO CART FAILED: AuthToken is missing. Check your Login component.");
+            alert("Please log in to add items to your cart.");
+            navigate('/login'); // Redirect user to log in
+            return;
+        }
+
+        try {
+            const response = await fetch(`${ADD_TO_CART_ENDPOINT}/carts`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 2. Use the retrieved token with the 'Basic' prefix
+                    'Authorization': `Basic ${authToken}` 
+                },
+                body: JSON.stringify({ 
+                    productId: productId, 
+                    quantity: 1
+                })
+            });
+
+            if (response.ok) {
+                alert('Item added to cart successfully!');
+            } else {
+                const errorData = await response.json();
+                console.error('Failed to add to cart:', errorData);
+                alert(`Failed to add item: ${errorData.message || 'Server error'}`);
+            }
+
+        } catch (error) {
+            console.error('Network or application error during Add to Cart:', error);
+            alert("Could not connect to the server. Please try again.");
+        }
     };
 
-    fetchDresses();
-  }, []); // Empty dependency array ensures this runs only once on mount
+    if (loading) {
+        // Class name 'loading-spinner' is still correct based on the NOTE/CSS comment
+        return <div className="loading-spinner">Loading products...</div>;
+    }
 
-  // --- Rendering Logic ---
+    // Display error message if the fetch failed
+    if (error && products.length === 0) {
+        // Class name 'error-message' is still correct based on the NOTE/CSS comment
+        return <div className="error-message">Error: {error}</div>;
+    }
 
-  if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="flex flex-col items-center p-8 bg-white rounded-xl shadow-2xl">
-          <Loader className="w-12 h-12 text-pink-600 animate-spin" />
-          <p className="mt-4 text-lg font-semibold text-gray-700">Loading Baddies Boutique Catalog...</p>
+        // Corrected classname: home-page -> home
+        <div className="home"> 
+            {/* Corrected classname: page-title -> home-title */}
+            <h1 className="home-title">Shop All</h1>
+            
+            {/* Corrected classname: product-grid -> dress-grid */}
+            <div className="dress-grid"> 
+                {products.map(product => (
+                    // Corrected classname: product-card -> dress-card
+                    <div key={product._id} className="dress-card"> 
+                        {/* Corrected classname: product-image-container -> image-container */}
+                        <div className="image-container"> 
+                            {/* Class name 'product-image' is correct in both */}
+                            <img src={product.imageUrl} alt={product.name} className="product-image" />
+                            {/* The CSS uses overlay-top for this section, and 'heart-icon' for the inner div */}
+                            <div className="overlay-top"> 
+                                {/* Placeholder for rating, if needed, otherwise an empty div */}
+                                <div></div> 
+                                {/* Corrected class structure: simplified the heart container */}
+                                <div className="heart-icon">
+                                    <Heart size={20} fill="#FF69B4" color="#FF69B4" />
+                                </div>
+                            </div>
+                        </div>
+                        {/* Corrected classname: product-details -> info-container */}
+                        <div className="info-container"> 
+                            {/* Corrected classname: product-name -> product-name-bottom */}
+                            <h2 className="product-name-bottom">{product.name}</h2>
+                            {/* Class name 'product-category' is correct in both */}
+                            <p className="product-category">{product.category}</p>
+                            
+                            {/* Corrected classname: product-price-size -> price-and-sizes-row */}
+                            <div className="price-and-sizes-row"> 
+                                {/* Class name 'product-price' is correct in both */}
+                                <span className="product-price">R{product.price}</span>
+                                
+                                {/* Corrected classname: product-sizes -> size-selector-chips */}
+                                <div className="size-selector-chips"> 
+                                    {/* Corrected classname: size-pill -> size-chip */}
+                                    <span className="size-chip">XS</span>
+                                    <span className="size-chip">S</span>
+                                    <span className="size-chip">M</span>
+                                    <span className="size-chip">L</span>
+                                </div>
+                            </div>
+                            
+                            {/* Corrected classname: add-to-cart-button -> add-to-bag-button */}
+                            <button 
+                                className="add-to-bag-button"
+                                onClick={() => handleAddToCart(product._id)} 
+                                disabled={!isLoggedIn} // Disable if not logged in
+                            >
+                                <ShoppingCart size={20} />
+                                ADD TO BAG
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
-      </div>
     );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-red-50 p-6">
-        <div className="flex flex-col items-center p-8 bg-white rounded-xl shadow-2xl border-2 border-red-500">
-          <AlertCircle className="w-12 h-12 text-red-600" />
-          <p className="mt-4 text-xl font-bold text-red-700">Connection Error</p>
-          <p className="text-gray-600 mt-2 text-center">
-            {error}. Please ensure your Node.js server is running on <code className="font-mono bg-gray-100 p-1 rounded">https://localhost:3000</code> and accessible.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
-      <header className="text-center mb-10">
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
-          Baddies Boutique
-        </h1>
-        <p className="mt-3 text-lg text-gray-500">
-          Explore the latest collection of irresistible fashion.
-        </p>
-      </header>
-      
-      {dresses.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 max-w-7xl mx-auto">
-          {dresses.map((dress) => (
-            // Using the MongoDB ObjectId (_id) as the key
-            <DressCard key={dress._id} dress={dress} />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center p-16 max-w-md mx-auto bg-white rounded-xl shadow-xl">
-            <ShoppingBag className="w-16 h-16 text-gray-400 mx-auto" />
-            <h2 className="mt-4 text-2xl font-bold text-gray-900">No Products Found</h2>
-            <p className="mt-2 text-gray-500">The API returned an empty list. Check your MongoDB "Dresses" collection.</p>
-        </div>
-      )}
-    </div>
-  );
 }
+
+export default Home;
