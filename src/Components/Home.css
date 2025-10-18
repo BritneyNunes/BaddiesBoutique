@@ -1,19 +1,6 @@
-/* General Styling */
-/* body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f8f8f8; 
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
-    box-sizing: border-box;
-} */
-
 /* Home Container */
 .home {
     padding: 20px;
-    /* REMOVED max-width: 1200px to allow content to span full width */
     width: 100%;
     box-sizing: border-box;
 }
@@ -29,7 +16,6 @@
 /* Dress Grid */
 .dress-grid {
     display: grid;
-    /* Set a default 2-column layout for small/medium screens */
     grid-template-columns: repeat(2, 1fr); 
     gap: 25px;
     justify-content: center;
@@ -44,7 +30,6 @@
     display: flex;
     flex-direction: column;
     transition: transform 0.2s ease-in-out;
-    cursor: pointer;
     min-width: 250px; 
     position: relative;
 }
@@ -57,7 +42,6 @@
 /* Image Container */
 .image-container {
     width: 100%;
-    /* Set height for tall 'full portrait' look */
     height: 480px; 
     display: flex;
     align-items: center;
@@ -76,20 +60,6 @@
     display: block;
 }
 
-.image-missing-text {
-    position: absolute;
-    color: #888;
-    font-size: 1.1em;
-    text-align: center;
-    padding: 10px;
-    display: none;
-}
-
-/* Card Color Variations */
-.card-color-1 { background-color: #f7e6f0; } 
-.card-color-2 { background-color: #e6f7f0; } 
-.card-color-3 { background-color: #f0e6f7; } 
-
 /* Overlay for Rating & Heart */
 .overlay-top {
     position: absolute;
@@ -99,18 +69,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 2; 
-}
-
-.rating-badge {
-    background-color: rgba(0, 0, 0, 0.6);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.8em;
-    display: flex;
-    align-items: center;
-    gap: 3px;
+    z-index: 5; /* below button */
+    pointer-events: auto; /* restore normal click behavior */
 }
 
 .heart-icon {
@@ -161,7 +121,7 @@
     min-height: 28px; 
 }
 
-/* Size Chip styling (Unselected) */
+/* Size Chip styling */
 .size-selector-chips {
     display: flex; 
     gap: 5px;
@@ -192,15 +152,12 @@
     color: #FF69B4;
 }
 
-
-/* Selected Size Chip styling - PINK */
 .size-chip.selected {
     background-color: #FF69B4; 
     border-color: #FF69B4;
     color: white;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2); 
 }
-
 
 /* Add to Cart Button */
 .add-to-bag-button {
@@ -217,7 +174,9 @@
     justify-content: center;
     gap: 8px;
     transition: background-color 0.2s ease-in-out, transform 0.1s ease;
-    margin-top: auto; 
+    margin-top: auto;
+    position: relative; /* ensures button is above overlays */
+    z-index: 10;
 }
 
 .add-to-bag-button:hover:not(:disabled) {
@@ -232,7 +191,7 @@
     box-shadow: none;
 }
 
-/* Loading Indicator Styles (unchanged) */
+/* Loading Indicator Styles */
 .loading-container {
     display: flex;
     flex-direction: column;
@@ -246,6 +205,7 @@
     background-color: rgba(255, 255, 255, 0.9);
     z-index: 9999;
 }
+
 .loading-text { color: #FF69B4; font-size: 1.5em; margin-bottom: 20px; }
 .spinner-dots { display: flex; justify-content: center; align-items: center; height: 20px; }
 .dot {
@@ -260,9 +220,7 @@
     40% { transform: scale(1); background-color: #FF69B4; }
 }
 
-
-/* --- Responsive Adjustments (FIXED BREAKPOINTS) --- */
-/* Enforce 4-column layout on wide screens, matching the original screenshot */
+/* --- Responsive Adjustments --- */
 @media (min-width: 900px) {
     .dress-grid {
         grid-template-columns: repeat(4, 1fr);

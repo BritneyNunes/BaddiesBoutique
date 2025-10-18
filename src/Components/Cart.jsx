@@ -1,136 +1,113 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { X, ShoppingBag } from 'lucide-react';
-import './Cart.css'; // Ensure this path correctly points to your CSS file
+import { X, ShoppingBag, Loader2 } from 'lucide-react';
 
-// Constants for mock data and colors (matching CSS variables)
-const COLORS = {
-    DUSTY_ROSE_ACCENT: '#C48E96',
-    TAUPE_BORDER: '#D9C4C0',
-};
+const API_BASE_URL = 'http://localhost:3000';
+const CART_ENDPOINT = '/carts';
+const DEFAULT_SHIPPING_COST = 150.00;
+const COLORS = { DUSTY_ROSE_ACCENT: '#C48E96', TAUPE_BORDER: '#D9C4C0', ERROR: '#e53e3e' };
 
-const initialMockCart = [
-    { id: 4, name: "Statement Gold Hoops", quantity: 1, price: 35.00, imageUrl: "https://placehold.co/80x80/CCCCCC/333333?text=EARRINGS" },
-    { id: 2, name: "Velvet Cropped Blazer", quantity: 1, price: 95.00, imageUrl: "https://placehold.co/80x80/CCCCCC/333333?text=BLAZER" },
-    { id: 3, name: "Silk Slip Skirt", quantity: 1, price: 79.50, imageUrl: "https://placehold.co/80x80/CCCCCC/333333?text=SKIRT" },
-];
-
-const DEFAULT_SHIPPING_COST = 15.00;
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const MAX_RETRIES = 3;
 
 function Cart() {
-  const [cartItems, setCartItems] = useState(initialMockCart);
-  
-  // Calculate subtotal and total items
-  const { subtotal, totalItems } = useMemo(() => {
-    const calculatedSubtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-    const calculatedTotalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-    return { subtotal: calculatedSubtotal, totalItems: calculatedTotalItems };
-  }, [cartItems]);
-  
-  const estimatedTotal = subtotal + DEFAULT_SHIPPING_COST;
+    const [cartItems, setCartItems] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  const handleRemoveItem = (itemId) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
-  };
+    const fetchCart = async (retryCount = 0) => {
+        setLoading(true);
+        setError(null);
 
-  const handleCheckout = () => {
-    console.log("Proceeding to checkout with total: $" + estimatedTotal.toFixed(2));
-  };
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            setError("Authentication token not found. Please log in.");
+            setLoading(false);
+            return;
+        }
 
-  // State for empty cart
-  if (cartItems.length === 0) {
+        try {
+            const response = await fetch(`${API_BASE_URL}${CART_ENDPOINT}`, {
+                method: 'GET',
+                headers: { 'Authorization': `Basic ${token}` },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch cart data: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            setCartItems(data);
+
+        } catch (err) {
+            console.error('Fetch Cart Error:', err);
+            if (retryCount < MAX_RETRIES) {
+                await sleep(Math.pow(2, retryCount) * 1000);
+                fetchCart(retryCount + 1);
+                return;
+            }
+            setError(`Could not load cart after ${MAX_RETRIES} attempts. ${err.message}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => { fetchCart(); }, []);
+
+    const handleRemoveItem = async (itemId) => {
+        const token = localStorage.getItem('authToken');
+        try {
+            await fetch(`${API_BASE_URL}${CART_ENDPOINT}/${itemId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Basic ${token}` }
+            });
+            setCartItems(prev => prev.filter(item => item._id !== itemId));
+        } catch (err) { console.error("Remove item error:", err); }
+    };
+
+    const { subtotal, totalItems } = useMemo(() => {
+        const subtotalCalc = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+        const totalItemsCalc = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+        return { subtotal: subtotalCalc, totalItems: totalItemsCalc };
+    }, [cartItems]);
+
+    const estimatedTotal = subtotal + DEFAULT_SHIPPING_COST;
+
+    if (loading) return <div className="cart-feedback-container"><Loader2 size={48} className="animate-spin text-gray-700" /><h2>Loading Your Bag...</h2></div>;
+    if (error) return <div className="cart-feedback-container"><X size={48} style={{ color: COLORS.ERROR }} /><h2>Error Loading Cart</h2><p>{error}</p></div>;
+    if (cartItems.length === 0) return <div className="empty-cart-container"><ShoppingBag size={64} style={{ color: COLORS.DUSTY_ROSE_ACCENT }} /><h2>Your Bag is Empty</h2><Link to="/"><button>Continue Shopping</button></Link></div>;
+
     return (
-      <div className="empty-cart-container">
-        <ShoppingBag size={64} style={{ color: COLORS.DUSTY_ROSE_ACCENT }} />
-        <h2 className="empty-cart-title">Your Bag is Empty</h2>
-        <p className="empty-cart-message">Looks like you haven't added anything to your cart yet.</p>
-        <Link to="/">
-          <button className="continue-shopping-button">
-              Continue Shopping
-          </button>
-        </Link>
-      </div>
-    );
-  }
-
-  // State for cart with items
-  return (
-    <main className="cart-page-container">
-      <h2 className="cart-title">Your Shopping Bag</h2>
-
-      <div className="cart-content-wrapper">
-        
-        {/* Left Column: Cart Items List */}
-        <div className="cart-items-list">
-          {cartItems.map(item => (
-            <div 
-              key={item.id} 
-              className="cart-item" // Target class for individual item box
-            >
-              {/* Image Container */}
-              <div className="item-image-container">
-                <img 
-                  src={item.imageUrl} 
-                  alt={item.name} 
-                  className="item-image"
-                  onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/80x80/${COLORS.TAUPE_BORDER.replace('#', '')}/FFFFFF?text=Item`; }}
-                />
-              </div>
-              
-              {/* Item Details */}
-              <div className="item-details">
-                <h3 className="item-name">{item.name}</h3>
-                <p className="item-qty">Qty: {item.quantity}</p>
-              </div>
-              
-              {/* Price and Remove Button */}
-              <div className="item-actions">
-                <span className="item-price">
-                  ${(item.price * item.quantity).toFixed(2)}
-                </span>
-                <button 
-                  onClick={() => handleRemoveItem(item.id)}
-                  className="item-remove-button"
-                  title="Remove Item"
-                >
-                  <X size={18} /> Remove
-                </button>
-              </div>
+        <main className="cart-page-container">
+            <h2>Your Shopping Bag</h2>
+            <div className="cart-content-wrapper">
+                <div className="cart-items-list">
+                    {cartItems.map(item => (
+                        <div key={item._id} className="cart-item">
+                            <div className="item-image-container">
+                                <img src={item.imageUrl} alt={item.name} onError={(e) => { e.target.src=`https://placehold.co/80x80/${COLORS.TAUPE_BORDER.replace('#','')}/FFFFFF?text=Item`; }} />
+                            </div>
+                            <div className="item-details">
+                                <h3>{item.name}</h3>
+                                <p>Qty: {item.quantity}</p>
+                            </div>
+                            <div className="item-actions">
+                                <span>R{(item.price * item.quantity).toFixed(2)}</span>
+                                <button onClick={() => handleRemoveItem(item._id)}><X size={18}/> Remove</button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <div className="order-summary-card">
+                    <h3>Order Summary</h3>
+                    <div><span>Subtotal ({totalItems} items)</span><span>R{subtotal.toFixed(2)}</span></div>
+                    <div><span>Shipping (Standard)</span><span>R{DEFAULT_SHIPPING_COST.toFixed(2)}</span></div>
+                    <div><span>Estimated Total</span><span>R{estimatedTotal.toFixed(2)}</span></div>
+                    <Link to="/checkout"><button>PROCEED TO CHECKOUT</button></Link>
+                </div>
             </div>
-          ))}
-        </div>
-
-        {/* Right Column: Order Summary Sidebar */}
-        <div className="order-summary-card"> {/* Target class for summary box */}
-          <h3 className="summary-title">Order Summary</h3>
-          
-          <div className="summary-line">
-            <span>Subtotal ({totalItems} items)</span>
-            <span>${subtotal.toFixed(2)}</span>
-          </div>
-          
-          <div className="summary-line">
-            <span>Shipping (Standard)</span>
-            <span>${DEFAULT_SHIPPING_COST.toFixed(2)}</span>
-          </div>
-          
-          <div className="summary-line total-line">
-            <span>Estimated Total</span>
-            <span>${estimatedTotal.toFixed(2)}</span>
-          </div>
-
-          <Link to="/checkout">
-            <button 
-            onClick={handleCheckout}
-            className="checkout-button"
-          >
-            PROCEED TO CHECKOUT
-            </button>
-          </Link>
-        </div>
-      </div>
-    </main>
-  );
+        </main>
+    );
 }
 
 export default Cart;

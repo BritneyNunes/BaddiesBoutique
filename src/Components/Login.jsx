@@ -1,35 +1,21 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock } from 'lucide-react'; 
-import './Login.css'; 
-import { useAuth } from './AuthContext'; 
-
-// NOTE: API_BASE_URL and LOGIN_ENDPOINT are now only used internally by AuthContext's login function.
-// We keep the imports clean here.
+import './Login.css';
 
 function LogIn() {
-    const [form, setForm] = useState({
-        email: '',
-        password: ''
-    });
+    const [form, setForm] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-
-    // Get the centralized login function from your AuthProvider
-    const { login } = useAuth();
     const navigate = useNavigate();
 
     const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        });
+        setForm({ ...form, [e.target.name]: e.target.value });
         if (error) setError('');
     };
 
     const handleLogin = async (e) => {
         e.preventDefault();
-
         if (!form.email || !form.password) {
             setError('Email and password are required.');
             return;
@@ -39,26 +25,33 @@ function LogIn() {
         setError('');
 
         try {
-            // ⭐ CORE CHANGE: Call the AuthProvider's login function with raw credentials
-            // The AuthProvider handles the Base64 encoding, API call to /checkpassword,
-            // and saving the resulting token to localStorage.
-            const result = await login(form.email, form.password);
+            // Encode email:password in Base64
+            const encoded = btoa(`${form.email}:${form.password}`);
 
-            if (result.success) {
-                // Login successful, navigate home
-                navigate('/'); 
-            } else {
-                // Display the error message provided by the AuthProvider
-                throw new Error(result.message || 'Login failed.');
+            const response = await fetch('http://localhost:3000/checkpassword', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Basic ${encoded}`,
+                },
+            });
+
+            if (!response.ok) {
+                const text = await response.text(); // catch HTML errors
+                throw new Error(text || 'Login failed');
             }
+
+            const data = await response.json();
+
+            // Save the Base64 token in localStorage
+            localStorage.setItem('authToken', encoded);
+            localStorage.setItem('userEmail', form.email);
+
+            console.log('Login successful', data);
+            navigate('/'); // redirect to home
 
         } catch (err) {
             console.error('Login Error:', err);
-            // The AuthProvider now returns user-friendly messages, so we display them directly
-            const displayError = err.message.includes("Network error") 
-                ? "Could not connect to the backend. Is your server running?" 
-                : err.message;
-            setError(displayError);
+            setError(err.message.includes('Invalid') ? 'Invalid email or password' : err.message);
         } finally {
             setLoading(false);
         }
@@ -67,20 +60,11 @@ function LogIn() {
     return (
         <div className="login-page">
             <div className="login-container">
-                <h2 className="login-title">
-                    Welcome Back, Baddie
-                </h2>
-                
-                {/* Error Message Display */}
-                {error && (
-                    <div className="login-error">
-                        {error}
-                    </div>
-                )}
+                <h2 className="login-title">Welcome Back, Baddie</h2>
+
+                {error && <div className="login-error">{error}</div>}
 
                 <form onSubmit={handleLogin} className="login-form">
-                    
-                    {/* Email Field */}
                     <div className="input-group">
                         <Mail size={20} className="input-icon" />
                         <input
@@ -95,7 +79,6 @@ function LogIn() {
                         />
                     </div>
 
-                    {/* Password Field */}
                     <div className="input-group">
                         <Lock size={20} className="input-icon" />
                         <input
@@ -110,20 +93,13 @@ function LogIn() {
                         />
                     </div>
 
-                    <button 
-                        type="submit" 
-                        className="login-button" 
-                        disabled={loading}
-                    >
+                    <button type="submit" className="login-button" disabled={loading}>
                         {loading ? 'Logging In...' : 'Log In'}
                     </button>
                 </form>
 
                 <p className="signup-prompt">
-                    Don't have an account? 
-                    <Link to="/signup" className="signup-link">
-                        Sign Up
-                    </Link>
+                    Don't have an account? <Link to="/signup" className="signup-link">Sign Up</Link>
                 </p>
             </div>
         </div>

@@ -1,56 +1,43 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthContext'; // ⭐ IMPORTED useAuth
+import { useAuth } from './AuthContext';
 import { Heart, ShoppingCart } from 'lucide-react';
+import "./Home.css";
 
-// NOTE: Ensure your API URL is correct here or imported from a config file
-const ADD_TO_CART_ENDPOINT = "http://localhost/3000";
-const PRODUCTS_API_ENDPOINT = "http://localhost/3000";
+const ADD_TO_CART_ENDPOINT = "http://localhost:3000";
+const PRODUCTS_API_ENDPOINT = "http://localhost:3000";
 
 function Home() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedSizes, setSelectedSizes] = useState({}); // productId -> selected size
     const navigate = useNavigate();
-    
-    // ⭐ Get the necessary functions/state from AuthContext
-    const { getToken, isLoggedIn } = useAuth(); 
 
-    /**
-     * UPDATED: Function to fetch products. It now conditionally sends the Basic Auth token.
-     */
+    const { getToken, isLoggedIn } = useAuth();
+
     const fetchProducts = useCallback(async () => {
         setLoading(true);
         setError(null);
         
         const authToken = getToken(); 
-        
-        // Prepare headers object
-        const headers = {
-            'Content-Type': 'application/json',
-        };
-        
-        // CRITICAL FIX: Only add the Authorization header if a token exists.
-        if (authToken) {
-            headers['Authorization'] = `Basic ${authToken}`;
-        }
+        const headers = { 'Content-Type': 'application/json' };
+        if (authToken) headers['Authorization'] = `Basic ${authToken}`;
 
         try {
             const response = await fetch(`${PRODUCTS_API_ENDPOINT}/dresses`, {
                 method: 'GET',
-                headers: headers, 
+                headers,
             });
 
             if (!response.ok) {
-                // We'll treat any failure as an error but stop if it's a hard error.
                 throw new Error(`Failed to fetch products: ${response.statusText}. Status: ${response.status}.`);
             }
-            
+
             const data = await response.json();
             setProducts(data);
         } catch (err) {
             console.error("Product Fetch Error:", err);
-            // Set error state for display, and clear products array
             setError("Could not load products. Please ensure your backend is running.");
             setProducts([]);
         } finally {
@@ -62,20 +49,18 @@ function Home() {
         fetchProducts();
     }, [fetchProducts]);
 
-    /**
-     * UPDATED: Handles adding a product to the cart with Basic Auth.
-     * @param {string} productId - The ID of the product to add.
-     */
     const handleAddToCart = async (productId) => {
-        
-        // 1. Get the Auth Token using the centralized function
-        const authToken = getToken(); 
+        const authToken = getToken();
 
         if (!authToken) {
-            // Handle the missing token error gracefully
-            console.error("ADD TO CART FAILED: AuthToken is missing. Check your Login component.");
             alert("Please log in to add items to your cart.");
-            navigate('/login'); // Redirect user to log in
+            navigate('/login');
+            return;
+        }
+
+        const selectedSize = selectedSizes[productId];
+        if (!selectedSize) {
+            alert("Please select a size before adding to your cart!");
             return;
         }
 
@@ -84,12 +69,12 @@ function Home() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // 2. Use the retrieved token with the 'Basic' prefix
-                    'Authorization': `Basic ${authToken}` 
+                    'Authorization': `Basic ${authToken}`
                 },
                 body: JSON.stringify({ 
-                    productId: productId, 
-                    quantity: 1
+                    productId,
+                    size: selectedSize, 
+                    quantity: 1 
                 })
             });
 
@@ -107,69 +92,45 @@ function Home() {
         }
     };
 
-    if (loading) {
-        // Class name 'loading-spinner' is still correct based on the NOTE/CSS comment
-        return <div className="loading-spinner">Loading products...</div>;
-    }
-
-    // Display error message if the fetch failed
-    if (error && products.length === 0) {
-        // Class name 'error-message' is still correct based on the NOTE/CSS comment
-        return <div className="error-message">Error: {error}</div>;
-    }
+    if (loading) return <div className="loading-spinner">Loading products...</div>;
+    if (error && products.length === 0) return <div className="error-message">Error: {error}</div>;
 
     return (
-        // Corrected classname: home-page -> home
-        <div className="home"> 
-            {/* Corrected classname: page-title -> home-title */}
+        <div className="home">
             <h1 className="home-title">Shop All</h1>
-            
-            {/* Corrected classname: product-grid -> dress-grid */}
-            <div className="dress-grid"> 
+            <div className="dress-grid">
                 {products.map(product => (
-                    // Corrected classname: product-card -> dress-card
-                    <div key={product._id} className="dress-card"> 
-                        {/* Corrected classname: product-image-container -> image-container */}
-                        <div className="image-container"> 
-                            {/* Class name 'product-image' is correct in both */}
+                    <div key={product._id} className="dress-card">
+                        <div className="image-container">
                             <img src={product.imageUrl} alt={product.name} className="product-image" />
-                            {/* The CSS uses overlay-top for this section, and 'heart-icon' for the inner div */}
-                            <div className="overlay-top"> 
-                                {/* Placeholder for rating, if needed, otherwise an empty div */}
-                                <div></div> 
-                                {/* Corrected class structure: simplified the heart container */}
+                            <div className="overlay-top">
+                                <div></div>
                                 <div className="heart-icon">
                                     <Heart size={20} fill="#FF69B4" color="#FF69B4" />
                                 </div>
                             </div>
                         </div>
-                        {/* Corrected classname: product-details -> info-container */}
-                        <div className="info-container"> 
-                            {/* Corrected classname: product-name -> product-name-bottom */}
-                            <h2 className="product-name-bottom">{product.name}</h2>
-                            {/* Class name 'product-category' is correct in both */}
+                        <div className="info-container">
+                            <h2 className="product-name-bottom">{product.productName}</h2>
                             <p className="product-category">{product.category}</p>
-                            
-                            {/* Corrected classname: product-price-size -> price-and-sizes-row */}
-                            <div className="price-and-sizes-row"> 
-                                {/* Class name 'product-price' is correct in both */}
+                            <div className="price-and-sizes-row">
                                 <span className="product-price">R{product.price}</span>
-                                
-                                {/* Corrected classname: product-sizes -> size-selector-chips */}
-                                <div className="size-selector-chips"> 
-                                    {/* Corrected classname: size-pill -> size-chip */}
-                                    <span className="size-chip">XS</span>
-                                    <span className="size-chip">S</span>
-                                    <span className="size-chip">M</span>
-                                    <span className="size-chip">L</span>
+                                <div className="size-selector-chips">
+                                    {["XS", "S", "M", "L"].map(size => (
+                                        <span
+                                            key={size}
+                                            className={`size-chip ${selectedSizes[product._id] === size ? "selected" : ""}`}
+                                            onClick={() => setSelectedSizes(prev => ({ ...prev, [product._id]: size }))}
+                                        >
+                                            {size}
+                                        </span>
+                                    ))}
                                 </div>
                             </div>
-                            
-                            {/* Corrected classname: add-to-cart-button -> add-to-bag-button */}
-                            <button 
+                            <button
                                 className="add-to-bag-button"
-                                onClick={() => handleAddToCart(product._id)} 
-                                disabled={!isLoggedIn} // Disable if not logged in
+                                onClick={() => handleAddToCart(product._id)}
+                                disabled={!selectedSizes[product._id]}
                             >
                                 <ShoppingCart size={20} />
                                 ADD TO BAG
