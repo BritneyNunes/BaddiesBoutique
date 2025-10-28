@@ -1,11 +1,6 @@
-/* Cart.css Styles 
-    Defines styles for the Cart component, ensuring a modern, responsive layout.
-*/
-
-/* --- Color Variables (Matching the overall boutique theme) --- */
 :root {
     --almond-bg: #faebd7;
-    --dusty-rose: #C48E96; /* Primary Accent */
+    --dusty-rose: #C48E96;
     --charcoal-text: #3A2B2B; /* Dark Text */
     --taupe-border: #D9C4C0; /* Soft border/secondary color */
     --deep-rose: #B76E79; /* Hover/Action color */
@@ -15,17 +10,19 @@
 /* --- Page Layout and Title --- */
 
 .cart-page-container {
-    max-width: 1200px;
+    max-width: 1100px; /* Slightly adjusted max width */
     margin: 0 auto;
-    padding: 70px;
+    padding: 50px 30px; /* Reduced padding for cleaner look */
+    background-color: var(--almond-bg); /* Match the soft page background */
 }
 
+/* Updated to look like the image: centered, large, serif font */
 .cart-title {
     text-align: center;
     font-size: 3rem;
     font-family: 'Playfair Display', serif;
     margin-bottom: 50px;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     color: var(--charcoal-text);
 }
 
@@ -37,30 +34,32 @@
 /* --- Left Column: Cart Items List --- */
 
 .cart-items-list {
-    flex: 2; 
+    flex: 2;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    min-width: 300px; /* Prevent shrinking too much */
+    min-width: 300px;
 }
 
+/* Style for individual item cards to match the image */
 .cart-item {
     display: flex;
     align-items: center;
     padding: 20px;
     background-color: var(--white);
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border-radius: 6px; /* Slightly softer corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* Subtle shadow */
     border: 1px solid var(--taupe-border);
 }
 
 .item-image-container {
-    width: 90px;
-    height: 110px;
-    border-radius: 8px;
+    /* This creates the small color swatch/image placeholder */
+    width: 78px;
+    height: 125px;
+    border-radius: 4px;
     overflow: hidden;
     margin-right: 20px;
-    background-color: var(--taupe-border); 
+    background-color: var(--taupe-border);
     flex-shrink: 0;
 }
 
@@ -78,36 +77,36 @@
 .item-name {
     font-size: 1.1rem;
     font-weight: 600;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     color: var(--charcoal-text);
 }
 
 .item-qty {
-    font-size: 0.9rem;
-    color: var(--taupe-border);
+    font-size: 0.85rem;
+    color: #777; /* Slightly darker than taupe for legibility */
 }
 
 .item-actions {
-    text-align: right;
+    /* Item actions are displayed side-by-side (price and remove) */
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
+    gap: 15px; /* Spacing between price and remove button */
 }
 
 .item-price {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--dusty-rose);
-    margin-bottom: 10px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--charcoal-text); /* Black text for price */
 }
 
+/* Styling the remove button to look like a small 'x' icon */
 .item-remove-button {
     background: none;
     border: none;
     cursor: pointer;
     padding: 5px;
-    color: var(--taupe-border);
-    transition: color 0.3s ease;
+    color: #999; /* Light grey 'x' */
+    transition: color 0.2s ease;
     display: flex;
     align-items: center;
     font-size: 0.8rem;
@@ -117,25 +116,25 @@
     color: var(--deep-rose);
 }
 
-/* --- Right Column: Order Summary (Sticky Sidebar) --- */
+/* --- Right Column: Order Summary --- */
 
 .order-summary-card {
-    flex: 1; 
-    padding: 30px;
-    border-radius: 12px;
+    flex: 1;
+    padding: 25px;
+    border-radius: 8px; /* Slightly smaller border radius */
     background-color: var(--white);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-    border: 2px solid var(--dusty-rose);
-    position: sticky; 
-    top: 100px; /* Offset from fixed Navbar */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--dusty-rose); /* Single rose border to match the image */
+    position: sticky;
+    top: 100px;
     height: fit-content;
-    min-width: 300px;
+    min-width: 250px;
 }
 
 .summary-title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     font-family: 'Playfair Display', serif;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     color: var(--charcoal-text);
     padding-bottom: 10px;
     border-bottom: 1px solid var(--taupe-border);
@@ -144,42 +143,43 @@
 .summary-line {
     display: flex;
     justify-content: space-between;
-    padding: 8px 0;
+    padding: 6px 0;
     font-size: 1rem;
     color: var(--charcoal-text);
 }
 
 .total-line {
-    padding-top: 20px;
+    padding-top: 15px;
     margin-top: 10px;
     border-top: 1px solid var(--taupe-border);
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     font-weight: 700;
 }
 
 .checkout-button {
     width: 100%;
     margin-top: 25px;
-    padding: 15px 0;
+    padding: 12px 0;
     border: none;
-    border-radius: 12px;
+    border-radius: 4px;
     background-color: var(--dusty-rose);
-    color: var(--almond-bg);
+    color: var(--white); /* White text on button */
     font-weight: bold;
     font-size: 1rem;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    transition: background-color 0.3s ease;
 }
 
 .checkout-button:hover {
     background-color: var(--deep-rose);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* --- Empty Cart State --- */
 
 .empty-cart-container {
+    /* Styles for the feedback containers */
+    /* Ensure they are centered and visually distinct */
     max-width: 600px;
     margin: 100px auto;
     padding: 40px;
@@ -201,12 +201,6 @@
     color: var(--charcoal-text);
 }
 
-.empty-cart-message {
-    font-size: 1.1rem;
-    color: var(--taupe-border);
-    margin-bottom: 20px;
-}
-
 .continue-shopping-button {
     padding: 10px 25px;
     background-color: var(--dusty-rose);
@@ -222,17 +216,14 @@
     opacity: 0.85;
 }
 
-
 /* --- Responsive Adjustments --- */
 
 @media (max-width: 1024px) {
-    /* Stack content vertically on tablets/small desktops */
     .cart-content-wrapper {
         flex-direction: column;
         gap: 20px;
     }
-    
-    /* Remove sticky position for sidebar and make it full width */
+
     .order-summary-card {
         position: static;
         min-width: unset;
@@ -243,13 +234,12 @@
     .cart-page-container {
         padding: 20px 10px;
     }
-    
+
     .cart-item {
         flex-wrap: wrap;
         padding: 15px;
     }
 
-    /* Adjust placement of price and remove button for small phones */
     .item-actions {
         flex-direction: row;
         justify-content: space-between;
@@ -259,7 +249,7 @@
         padding-top: 10px;
         border-top: 1px solid var(--taupe-border);
     }
-    
+
     .item-price {
         font-size: 1.2rem;
         margin-right: 0;

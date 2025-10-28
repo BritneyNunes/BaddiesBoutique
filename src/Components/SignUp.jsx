@@ -75,7 +75,7 @@ function SignUp() {
             }
 
             // 2. AUTOMATIC LOGIN: Call the AuthProvider's login function
-            // The AuthProvider will handle the /checkpassword API call and localStorage storage.
+            // The AuthProvider will handle the /login API call and localStorage storage.
             const loginResult = await login(form.email, form.password); 
 
             if (!loginResult.success) {

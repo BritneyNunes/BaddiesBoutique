@@ -31,9 +31,9 @@ function Navbar() {
         
         {/* Wrap icons in their own div for better control */}
         <div className="navbar-icons">
-          <button className="navbar-button" title="Search">
+          {/* <button className="navbar-button" title="Search">
             <Search size={24} />
-          </button>
+          </button> */}
           
           {/* Wishlist button is authenticated (only show if logged in, or link to auth page) */}
           <Link to={isLoggedIn ? "/wishlist" : "/auth"}>

@@ -16,13 +16,13 @@ function Home() {
 
     const { getToken, isLoggedIn } = useAuth();
 
+    // 💡 FIX 1: Removed authToken logic from fetchProducts to make it public.
     const fetchProducts = useCallback(async () => {
         setLoading(true);
         setError(null);
         
-        const authToken = getToken(); 
+        // Products endpoint should not require authentication.
         const headers = { 'Content-Type': 'application/json' };
-        if (authToken) headers['Authorization'] = `Basic ${authToken}`;
 
         try {
             const response = await fetch(`${PRODUCTS_API_ENDPOINT}/dresses`, {
@@ -31,6 +31,7 @@ function Home() {
             });
 
             if (!response.ok) {
+                // We throw an error only if the public fetch fails for a server reason
                 throw new Error(`Failed to fetch products: ${response.statusText}. Status: ${response.status}.`);
             }
 
@@ -38,20 +39,22 @@ function Home() {
             setProducts(data);
         } catch (err) {
             console.error("Product Fetch Error:", err);
-            setError("Could not load products. Please ensure your backend is running.");
+            // This error is now only displayed if the server is truly down or misconfigured.
+            setError("Could not load products. Please ensure your backend is running and the /dresses endpoint is public.");
             setProducts([]);
         } finally {
             setLoading(false);
         }
-    }, [getToken]);
+    }, []); // Removed [getToken] from dependency array
 
     useEffect(() => {
         fetchProducts();
     }, [fetchProducts]);
-
+``
     const handleAddToCart = async (productId) => {
         const authToken = getToken();
 
+        // 💡 This check remains for the protected cart endpoint
         if (!authToken) {
             alert("Please log in to add items to your cart.");
             navigate('/login');
@@ -69,6 +72,7 @@ function Home() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    // This remains the correct authenticated header for the protected cart endpoint
                     'Authorization': `Basic ${authToken}`
                 },
                 body: JSON.stringify({ 

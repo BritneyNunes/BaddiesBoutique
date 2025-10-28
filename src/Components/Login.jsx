@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock } from 'lucide-react'; 
+import { useAuth } from './AuthContext'; // Import useAuth
 import './Login.css';
 
 function LogIn() {
@@ -8,6 +9,7 @@ function LogIn() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { login: contextLogin } = useAuth(); // Use the context's centralized login function
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -25,29 +27,16 @@ function LogIn() {
         setError('');
 
         try {
-            // Encode email:password in Base64
-            const encoded = btoa(`${form.email}:${form.password}`);
+            // Use the centralized login function from AuthContext
+            const result = await contextLogin(form.email, form.password);
 
-            const response = await fetch('http://localhost:3000/checkpassword', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Basic ${encoded}`,
-                },
-            });
-
-            if (!response.ok) {
-                const text = await response.text(); // catch HTML errors
-                throw new Error(text || 'Login failed');
+            if (result.success) {
+                console.log('Login successful');
+                navigate('/'); // redirect to home
+            } else {
+                // Display the error message returned from the context
+                throw new Error(result.message || 'Login failed');
             }
-
-            const data = await response.json();
-
-            // Save the Base64 token in localStorage
-            localStorage.setItem('authToken', encoded);
-            localStorage.setItem('userEmail', form.email);
-
-            console.log('Login successful', data);
-            navigate('/'); // redirect to home
 
         } catch (err) {
             console.error('Login Error:', err);
