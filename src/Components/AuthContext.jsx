@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+// Use environment variable with fallback to localhost
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+
 // 1. Create the Context object
 export const AuthContext = createContext({
   isLoggedIn: false,
@@ -15,7 +18,7 @@ export const useAuth = () => useContext(AuthContext);
 
 // --- API Helper Function ---
 const validateBasicAuthToken = async (basicToken) => {
-    const CHECK_PASSWORD_API = 'http://localhost:3000/login';
+    const CHECK_PASSWORD_API = `${API_BASE_URL}/login`;
 
     if (!basicToken) return null;
 
@@ -96,7 +99,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     // NOTE: Using window.btoa (browser built-in) for Base64 encoding
     const base64Credentials = window.btoa(`${email}:${password}`);
-    const CHECK_PASSWORD_API = 'http://localhost:3000/login'; 
+    const CHECK_PASSWORD_API = `${API_BASE_URL}/login`; 
     
     try {
         const response = await fetch(CHECK_PASSWORD_API, {

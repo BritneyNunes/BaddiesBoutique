@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { Mail, Lock, User, CheckCircle } from 'lucide-react';
-import './SignUp.css'; // Import the CSS file
+import './SignUp.css';
 
-const API_BASE_URL = 'http://localhost:3000'; 
+// Use environment variable with fallback to localhost
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
 function SignUp() {
     const [form, setForm] = useState({
