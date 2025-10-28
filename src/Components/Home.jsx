@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { Heart, ShoppingCart } from 'lucide-react';
+import { Heart, ShoppingBag } from 'lucide-react';
 import "./Home.css";
 
 // Use environment variable with fallback to localhost
@@ -132,7 +132,7 @@ function Home() {
                                 onClick={() => handleAddToCart(product._id)}
                                 disabled={!selectedSizes[product._id]}
                             >
-                                <ShoppingCart size={20} />
+                                <ShoppingBag size={20} />
                                 ADD TO BAG
                             </button>
                         </div>

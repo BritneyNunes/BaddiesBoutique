@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Truck, CreditCard, Lock, ShoppingCart, Search, Heart, Loader2, X } from 'lucide-react';
+import { Truck, CreditCard, Lock, ShoppingBag, Search, Heart, Loader2, X } from 'lucide-react';
 import './Checkout.css'; 
 
 // Use environment variable with fallback to localhost
@@ -135,7 +135,7 @@ function Checkout() {
     // Redirect if cart is empty after loading
     if (cartItems.length === 0) return (
         <div className="checkout-page-container flex justify-center items-center h-[80vh] flex-col">
-            <ShoppingCart size={64} style={{ color: COLORS.DUSTY_ROSE_ACCENT }} />
+            <ShoppingBag size={64} style={{ color: COLORS.DUSTY_ROSE_ACCENT }} />
             <h2 className="section-title-checkout mt-4">Your Bag is Empty!</h2>
             <p className="text-gray-600">You must add items before checking out.</p>
             <Link to="/"><button className="place-order-button mt-6">Continue Shopping</button></Link>
@@ -153,7 +153,7 @@ function Checkout() {
                     <Search size={20} className="cursor-pointer" />
                     <Heart size={20} className="cursor-pointer" />
                     <Link to="/cart" className="relative">
-                        <ShoppingCart size={20} className="cursor-pointer" />
+                        <ShoppingBag size={20} className="cursor-pointer" />
                         <span className="absolute -top-2 -right-2 text-xs font-bold text-white rounded-full h-4 w-4 flex items-center justify-center" style={{ backgroundColor: COLORS.DUSTY_ROSE_ACCENT }}>{totalItems}</span>
                     </Link>
                 </div>

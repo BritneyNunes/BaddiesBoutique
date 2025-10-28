@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Heart, Search, User } from 'lucide-react';
+import { ShoppingBag, Heart, Search, User } from 'lucide-react';
 import { useAuth } from './AuthContext';
 import './Navbar.css';
 
@@ -46,7 +46,7 @@ function Navbar() {
           {/* Shopping Cart button */}
           <Link to="/cart">
             <button className="navbar-button" title="Cart">
-              <ShoppingCart size={24}/>
+              <ShoppingBag size={24}/>
             </button>
           </Link>
 
