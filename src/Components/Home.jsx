@@ -4,8 +4,8 @@ import { useAuth } from './AuthContext';
 import { Heart, ShoppingCart } from 'lucide-react';
 import "./Home.css";
 
-const ADD_TO_CART_ENDPOINT = "http://localhost:3000";
-const PRODUCTS_API_ENDPOINT = "http://localhost:3000";
+// Use environment variable with fallback to localhost
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 function Home() {
     const [products, setProducts] = useState([]);
@@ -16,7 +16,7 @@ function Home() {
 
     const { getToken, isLoggedIn } = useAuth();
 
-    // 💡 FIX 1: Removed authToken logic from fetchProducts to make it public.
+    // Fetch products from the configured backend URL
     const fetchProducts = useCallback(async () => {
         setLoading(true);
         setError(null);
@@ -25,13 +25,12 @@ function Home() {
         const headers = { 'Content-Type': 'application/json' };
 
         try {
-            const response = await fetch(`${PRODUCTS_API_ENDPOINT}/dresses`, {
+            const response = await fetch(`${API_BASE_URL}/dresses`, {
                 method: 'GET',
                 headers,
             });
 
             if (!response.ok) {
-                // We throw an error only if the public fetch fails for a server reason
                 throw new Error(`Failed to fetch products: ${response.statusText}. Status: ${response.status}.`);
             }
 
@@ -39,22 +38,20 @@ function Home() {
             setProducts(data);
         } catch (err) {
             console.error("Product Fetch Error:", err);
-            // This error is now only displayed if the server is truly down or misconfigured.
             setError("Could not load products. Please ensure your backend is running and the /dresses endpoint is public.");
             setProducts([]);
         } finally {
             setLoading(false);
         }
-    }, []); // Removed [getToken] from dependency array
+    }, []);
 
     useEffect(() => {
         fetchProducts();
     }, [fetchProducts]);
-``
+
     const handleAddToCart = async (productId) => {
         const authToken = getToken();
 
-        // 💡 This check remains for the protected cart endpoint
         if (!authToken) {
             alert("Please log in to add items to your cart.");
             navigate('/login');
@@ -68,11 +65,10 @@ function Home() {
         }
 
         try {
-            const response = await fetch(`${ADD_TO_CART_ENDPOINT}/carts`, {
+            const response = await fetch(`${API_BASE_URL}/carts`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // This remains the correct authenticated header for the protected cart endpoint
                     'Authorization': `Basic ${authToken}`
                 },
                 body: JSON.stringify({ 
