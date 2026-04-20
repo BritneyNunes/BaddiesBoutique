@@ -7,7 +7,7 @@ import './Checkout.css';
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 const CART_ENDPOINT = '/carts';
 const SHIPPING_COST = 15.00; // Fixed shipping cost in Rands
-const TAX_RATE = 0.08; // 8% tax rate
+const TAX_RATE = 0.15; // 15% tax rate
 const CURRENCY_SYMBOL = 'R'; // Changed from $ to R for Rands
 const COLORS = { DUSTY_ROSE_ACCENT: '#C48E96', ERROR: '#e53e3e' };
 

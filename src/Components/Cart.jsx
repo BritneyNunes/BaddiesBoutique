@@ -134,7 +134,7 @@ function Cart() {
                 <div className="order-summary-card">
                     <h3 className="summary-title">Order Summary</h3>
                     <div className="summary-line"><span>Subtotal ({totalItems} items)</span><span>R{subtotal.toFixed(2)}</span></div>
-                    <div className="summary-line"><span>Shipping (Standard)</span><span>R{DEFAULT_SHIPPING_COST.toFixed(2)}</span></div>
+                    {/* <div className="summary-line"><span>Shipping (Standard)</span><span>R{DEFAULT_SHIPPING_COST.toFixed(2)}</span></div> */}
                     <div className="summary-line total-line"><span>Estimated Total</span><span>R{estimatedTotal.toFixed(2)}</span></div>
                     <Link to="/checkout"><button className="checkout-button">PROCEED TO CHECKOUT</button></Link>
                 </div>

@@ -5,7 +5,7 @@ import { Mail, Lock, User, CheckCircle } from 'lucide-react';
 import './SignUp.css';
 
 // Use environment variable with fallback to localhost
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+const API_BASE_URL =  'http://localhost:3000' || import.meta.env.VITE_BACKEND_URL
 
 function SignUp() {
     const [form, setForm] = useState({

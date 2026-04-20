@@ -155,9 +155,7 @@ export const AuthProvider = ({ children }) => {
     loading,
   };
 
-  if (loading) {
-    return <div>Loading authentication...</div>;
-  }
+  
 
   return (
     <AuthContext.Provider value={contextValue}>

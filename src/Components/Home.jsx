@@ -5,7 +5,7 @@ import { Heart, ShoppingBag } from 'lucide-react';
 import "./Home.css";
 
 // Use environment variable with fallback to localhost
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+const API_BASE_URL =  "http://localhost:3000" || import.meta.env.VITE_BACKEND_URL 
 
 function Home() {
     const [products, setProducts] = useState([]);
@@ -42,6 +42,7 @@ function Home() {
             setProducts([]);
         } finally {
             setLoading(false);
+            console.log(`current backend url: ${API_BASE_URL}`)
         }
     }, []);
 
